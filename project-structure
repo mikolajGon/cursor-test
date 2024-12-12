@@ -1,0 +1,15 @@
+library-monorepo/
+├── docker-compose.yml
+├── package.json
+├── services/
+│   ├── gradlew
+│   ├── gradlew.bat
+│   ├── gradle/
+│   │   └── wrapper/
+│   │       ├── gradle-wrapper.jar
+│   │       └── gradle-wrapper.properties
+│   ├── settings.gradle.kts
+│   ├── build.gradle.kts
+│   ├── api-gateway/
+│   ├── book-service/
+│   └── user-service/

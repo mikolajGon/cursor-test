@@ -1,0 +1,33 @@
+{
+    "name": "library-monorepo",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "start:frontend": "yarn workspace @library/frontend start",
+        "start:all": "docker-compose up -d",
+        "dev": "concurrently \"yarn start:frontend\" \"yarn start:all\"",
+        "build:shared": "cd services && ./gradlew :shared:build",
+        "build:services": "yarn build:shared && cd services && ./gradlew build -x :shared:build",
+        "build:all": "yarn build:services && yarn workspaces run build",
+        "clean:services": "cd services && ./gradlew clean",
+        "start:book-service": "cd services && ./gradlew :book-service:run --continuous",
+        "start:user-service": "cd services && ./gradlew :user-service:run --continuous",
+        "start:api-gateway": "cd services && ./gradlew :api-gateway:run --continuous",
+        "start:auth-service": "cd services && ./gradlew :auth-service:run --continuous",
+        "dev:book-service": "cd services && DEVELOPMENT_MODE=1 ./gradlew :book-service:run",
+        "dev:user-service": "cd services && ./gradlew :user-service:run --continuous --quiet",
+        "dev:api-gateway": "cd services && ./gradlew :api-gateway:run --continuous --quiet",
+        "dev:auth-service": "cd services && ./gradlew :auth-service:run --continuous --quiet",
+        "start:services": "concurrently \"yarn start:book-service\" \"yarn start:user-service\" \"yarn start:api-gateway\" \"yarn start:auth-service\"",
+        "dev:services": "concurrently \"yarn dev:book-service\" \"yarn dev:user-service\" \"yarn dev:api-gateway\" \"yarn dev:auth-service\"",
+        "start:db": "docker-compose -f docker-compose.db.yml up -d",
+        "reset:db": "docker-compose -f docker-compose.db.yml down -v && docker-compose -f docker-compose.db.yml up -d",
+        "stop:db": "docker-compose -f docker-compose.db.yml down",
+        "dev:local": "./scripts/dev.sh",
+        "admin:create-user": "cd services && ./gradlew :admin-cli:run --args=\"create-user -u admin -p adminpass -r ADMIN,USER\"",
+        "admin": "cd services && ./gradlew :admin-cli:run --args"
+    }
+}

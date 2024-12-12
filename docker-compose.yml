@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  book-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: bookdb
+      POSTGRES_USER: bookuser
+      POSTGRES_PASSWORD: bookpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - book_db_data:/var/lib/postgresql/data
+
+  user-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: useruser
+      POSTGRES_PASSWORD: userpass
+    ports:
+      - "5433:5432"
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - book-service
+      - user-service
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      BOOK_SERVICE_URL: http://book-service:8081
+      USER_SERVICE_URL: http://user-service:8082
+
+  book-service:
+    build:
+      context: ./services/book-service
+      dockerfile: Dockerfile
+    expose:
+      - "8081"
+    depends_on:
+      - book-db
+      - redis
+    environment:
+      DATABASE_URL: jdbc:postgresql://book-db:5432/bookdb
+      DATABASE_USER: bookuser
+      DATABASE_PASSWORD: bookpass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    expose:
+      - "8082"
+    depends_on:
+      - user-db
+      - redis
+    environment:
+      DATABASE_URL: jdbc:postgresql://user-db:5432/userdb
+      DATABASE_USER: useruser
+      DATABASE_PASSWORD: userpass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    expose:
+      - "8083"
+    depends_on:
+      - auth-db
+      - redis
+    environment:
+      MONGO_URL: mongodb://authuser:authpass@auth-db:27017
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key}
+      JWT_ISSUER: ${JWT_ISSUER:-library-auth}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+volumes:
+  redis_data:
+  book_db_data:
+  user_db_data:
+  auth_db_data:

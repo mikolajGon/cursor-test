@@ -1,0 +1,51 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "kotlin",
+            "request": "launch",
+            "name": "Kotlin Launch",
+            "projectRoot": "${workspaceFolder}",
+            "mainClass": "path.to.your.MainClassKt"
+        },
+        {
+            "type": "kotlin",
+            "request": "attach",
+            "name": "API Gateway: 5005",
+            "projectRoot": "${workspaceFolder}/services/api-gateway",
+            "timeout": 3000,
+            "hostName": "localhost",
+            "port": 5005
+        },
+        {
+            "type": "kotlin",
+            "request": "attach",
+            "name": "Auth Service: 5006",
+            "projectRoot": "${workspaceFolder}/services/auth-service",
+            "timeout": 3000,
+            "hostName": "localhost",
+            "port": 5006
+        },
+        {
+            "type": "kotlin",
+            "request": "attach",
+            "name": "Book Service: 5007",
+            "projectRoot": "${workspaceFolder}/services/book-service",
+            "timeout": 3000,
+            "hostName": "localhost",
+            "port": 5007
+        },
+        {
+            "type": "kotlin",
+            "request": "attach",
+            "name": "User Service: 5008",
+            "projectRoot": "${workspaceFolder}/services/user-service",
+            "timeout": 3000,
+            "hostName": "localhost",
+            "port": 5008
+        }
+    ]
+}
